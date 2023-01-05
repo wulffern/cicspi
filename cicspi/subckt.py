@@ -5,10 +5,9 @@ import cicspi as spi
 
 
 class Subckt(spi.SpiceObject):
-    allSubckt = dict()
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self,parser):
+        super().__init__(parser)
         self.instances = list()
         self.inst_index = dict()
         pass
@@ -25,8 +24,6 @@ class Subckt(spi.SpiceObject):
             self.name = m.groups()[0]
         else:
             raise Exception("Could not parse subcktname on line %d " % self.lineNumber )
-
-        Subckt.allSubckt[self.name] = self
 
         #- Remove subckt
         firstline = re.sub(re_subckt,"",firstline).strip()
@@ -54,7 +51,7 @@ class Subckt(spi.SpiceObject):
             if(re.search(re_ignore,line)):
                 continue
 
-            inst = spi.SubcktInstance()
+            inst = spi.SubcktInstance(self.parser)
             inst.parse(line,instLineNumber)
             self.instances.append(inst)
             self.inst_index[inst.name] = len(self.instances)-1
