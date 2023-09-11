@@ -22,8 +22,12 @@ class SubcktInstance(spi.SpiceObject):
         self.lineNumber = lineNumber
         self.spiceStr = line
 
+        re_params_cdl = re.compile("\s*\$.*$")
+        line = re.sub(re_params_cdl,"",line)
+
+
         #- Remove parameters
-        re_params =  re.compile("(\s+(\S+)\s*=\s*(\S+))+")
+        re_params =  re.compile("(\s+(\$|\S+)\s*=\s*(\S+))+")
         m = re.search(re_params,line)
         if(m):
             #- TODO fix parameter read
@@ -32,6 +36,8 @@ class SubcktInstance(spi.SpiceObject):
             #    print(match)
 
         line = re.sub(re_params,"",line)
+
+        #print(line)
 
         self.nodes = re.split("\s+",line)
 

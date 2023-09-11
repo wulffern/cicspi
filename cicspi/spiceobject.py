@@ -50,9 +50,16 @@ class SpiceObject:
         self.prefix = ""
         self.children = list()
         self.parser = parser
+        self.parent = None
 
         pass
 
+    def isType(self,typename):
+        if(self.__class__.__name__ == typename):
+            return True
+        elif(super() and (super().__class__.__name__ == typename)):
+            return True
+        return False
 
     def nodesWithBus(self):
         nbus = list()

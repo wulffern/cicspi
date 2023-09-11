@@ -53,6 +53,7 @@ class Subckt(spi.SpiceObject):
 
             inst = spi.SubcktInstance(self.parser)
             inst.parse(line,instLineNumber)
+            inst.parent = self
             self.instances.append(inst)
             self.inst_index[inst.name] = len(self.instances)-1
 
