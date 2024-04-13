@@ -9,8 +9,12 @@ class SubcktInstance(spi.SpiceObject):
         super().__init__(parser)
 
 
+    def __lt__(self, other):
+        return self.name < other.name
+
+
     def _setName(self,val):
-        re_group = re.compile("^([^\d<>]+)(\S+)?$")
+        re_group = re.compile(r"^([^\d<>]+)(\S+)?$")
         m = re.search(re_group,val)
         if(m):
             self.groupName = m.groups()[0]
@@ -18,16 +22,23 @@ class SubcktInstance(spi.SpiceObject):
         self.deviceName = "subckt"
         self.spiceType = "X"
 
+    def fromSubckt(self,instname,sub):
+
+        self.name = instname
+        self.nodes = sub.nodes
+        self.instanceType = sub.name
+
+
     def parse(self,line,lineNumber):
         self.lineNumber = lineNumber
         self.spiceStr = line
 
-        re_params_cdl = re.compile("\s*\$.*$")
+        re_params_cdl = re.compile(r"\s*\$.*$")
         line = re.sub(re_params_cdl,"",line)
 
 
         #- Remove parameters
-        re_params =  re.compile("(\s+(\$|\S+)\s*=\s*(\S+))+")
+        re_params =  re.compile(r"(\s+(\$|\S+)\s*=\s*(\S+))+")
         m = re.search(re_params,line)
         if(m):
             #- TODO fix parameter read
@@ -39,7 +50,7 @@ class SubcktInstance(spi.SpiceObject):
 
         #print(line)
 
-        self.nodes = re.split("\s+",line)
+        self.nodes = re.split(r"\s+",line)
 
         #- Last name is model/type
         self.instanceType = self.nodes[-1]
