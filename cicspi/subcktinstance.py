@@ -21,9 +21,9 @@ class SubcktInstance(spi.SpiceObject):
             self.groupTag = m.groups()[1]
         self.deviceName = "subckt"
         self.spiceType = "X"
+        self.name = val
 
     def fromSubckt(self,instname,sub):
-
         self.name = instname
         self.nodes = sub.nodes
         self.instanceType = sub.name
@@ -48,8 +48,6 @@ class SubcktInstance(spi.SpiceObject):
 
         line = re.sub(re_params,"",line)
 
-        #print(line)
-
         self.nodes = re.split(r"\s+",line)
 
         #- Last name is model/type
@@ -61,5 +59,5 @@ class SubcktInstance(spi.SpiceObject):
 
         self.parser.allinst[self.instanceType] += 1
 
-        self.name = self.nodes[0]
+        self._setName(self.nodes[0])
         self.nodes.pop(0)
