@@ -9,8 +9,40 @@ class Subckt(spi.SpiceObject):
     def __init__(self,parser=None):
         super().__init__(parser)
         self.instances = list()
+        self.devices = list()
         self.inst_index = dict()
         pass
+
+    def fromJson(self,o):
+        super().fromJson(o)
+
+        #- Override name to support prefix
+        self.name = self.prefix + o["name"]
+
+        for d in o["devices"]:
+            dd = spi.Device()
+            dd.fromJson(d)
+            self.devices.append(dd)
+            pass
+
+        for i in o["instances"]:
+            ii = spi.SubcktInstance()
+            ii.prefix = self.prefix
+            ii.fromJson(i)
+            self.instances.append(ii)
+            pass
+
+    def toJson(self):
+        o = super().toJson()
+
+
+        o["devices"] = []
+        for d in self.devices:
+            o["devices"].append(d.toJson())
+        o["instances"] = []
+        for i in self.instances:
+            o["instances"].append(i.toJson())
+        return o
 
     def makeInstGroupSubckt(self,startswith):
         sub = Subckt(self.parser)
@@ -75,7 +107,7 @@ class Subckt(spi.SpiceObject):
         subckt_buffer.pop(0)
         subckt_buffer.pop()
 
-        instLineNumber = lineNumber
+        instLineNumber = lineNumber + 1
         re_ignore = re.compile(r"(^\s*$)|(^\s*\*)")
         for line in subckt_buffer:
             #- Ignore comments and empty lines
