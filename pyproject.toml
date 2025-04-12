@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cicspi"
+version = "0.1.0"
+authors = [
+  { name="Carsten Wulff", email="carsten@wulff.no" },
+]
+dependencies = [
+  "click",
+]
+license = { text = "MIT" }
+description = "Spice toolbox"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.scripts]
+cicspi = "cicspi.cic:cli"
+
+
+[project.urls]
+"Homepage" = "https://github.com/wulffern/cicspi"
+"Bug Tracker" = "https://github.com/wulffern/cicspi/issues"
