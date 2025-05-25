@@ -69,7 +69,7 @@ class SubcktInstance(spi.SpiceObject):
     def fromSubckt(self,instname,sub):
         self.name = instname
         self.nodes = sub.nodes
-        self.instanceType = sub.name
+        self.subcktName = sub.name
 
 
     def parse(self,line,lineNumber):
@@ -94,13 +94,13 @@ class SubcktInstance(spi.SpiceObject):
         self.nodes = re.split(r"\s+",line)
 
         #- Last name is model/type
-        self.instanceType = self.nodes[-1]
+        self.subcktName = self.nodes[-1]
         self.nodes.pop()
 
-        if(self.instanceType not in self.parser.allinst):
-            self.parser.allinst[self.instanceType] = 0
+        if(self.subcktName not in self.parser.allinst):
+            self.parser.allinst[self.subcktName] = 0
 
-        self.parser.allinst[self.instanceType] += 1
+        self.parser.allinst[self.subcktName] += 1
 
         self._setName(self.nodes[0])
         self.nodes.pop(0)

@@ -123,6 +123,6 @@ class Subckt(spi.SpiceObject):
     def tospice(self):
         ss = ".subckt " + self.name + " "+ " ".join(self.nodes) + "\n"
         for inst in sorted(self.instances):
-            ss += inst.name + " " + " ".join(inst.nodes) + " " +  inst.instanceType + "\n"
+            ss += inst.name + " " + " ".join(inst.nodes) + " " +  inst.subcktName + "\n"
         ss += ".ends " + self.name
         return ss
