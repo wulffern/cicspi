@@ -44,6 +44,22 @@ class Subckt(spi.SpiceObject):
             o["instances"].append(i.toJson())
         return o
 
+    def orderInstancesByGroup(self):
+
+        instList = list()
+        groups = dict()
+        for i in sorted(self.instances,key=lambda x: x.name):
+            group = i.groupName
+            if(group not in groups):
+                groups[group] = list()
+            groups[group].append(i)
+
+        for g in sorted(groups):
+            arr = sorted(groups[g])
+            instList += arr
+
+        return instList
+
     def makeInstGroupSubckt(self,startswith):
         sub = Subckt(self.parser)
         sub.name = self.name + "_" + startswith

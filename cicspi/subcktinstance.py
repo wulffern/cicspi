@@ -54,8 +54,6 @@ class SubcktInstance(spi.SpiceObject):
         o["deviceName"] = self.deviceName
         return o
 
-
-
     def _setName(self,val):
         re_group = re.compile(r"^([^\d<>]+)(\S+)?$")
         m = re.search(re_group,val)
