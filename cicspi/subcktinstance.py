@@ -34,6 +34,7 @@ class SubcktInstance(spi.SpiceObject):
         self.groupName = ""
         self.subcktName = ""
         self.deviceName = ""
+        self.groupTag = ""
         super().__init__(parser)
 
 
@@ -45,6 +46,8 @@ class SubcktInstance(spi.SpiceObject):
         self.groupName = o["groupName"]
         self.subcktName = self.prefix + o["subcktName"]
         self.deviceName = o["deviceName"]
+        if("groupTag" in o):
+            self.groupTag = o["groupTag"]
 
 
     def toJson(self):
@@ -52,6 +55,7 @@ class SubcktInstance(spi.SpiceObject):
         o["subcktName"] = self.subcktName
         o["groupName"] = self.groupName
         o["deviceName"] = self.deviceName
+        o["groupTag"] = self.groupTag
         return o
 
     def _setName(self,val):

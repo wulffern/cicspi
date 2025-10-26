@@ -6,11 +6,22 @@ import cicspi as spi
 
 class Subckt(spi.SpiceObject):
 
+    circuits = None
+
+    def getSubckt(name:str):
+
+        if(Subckt.circuits is not None):
+            if(name in Subckt.circuits):
+                return Subckt.circuits[name]
+        return None
+
     def __init__(self,parser=None):
         super().__init__(parser)
         self.instances = list()
         self.devices = list()
         self.inst_index = dict()
+        if(Subckt.circuits is None and parser is not None):
+            Subckt.circuits = parser
         pass
 
     def fromJson(self,o):

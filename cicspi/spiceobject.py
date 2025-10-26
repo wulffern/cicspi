@@ -119,6 +119,18 @@ class SpiceObject:
             return True
         return False
 
+    # ---- Convenience property accessors ----
+    def hasProperty(self, key:str) -> bool:
+        return key in self.properties
+
+    def getPropertyString(self, key:str, default:str="") -> str:
+        if key in self.properties:
+            return str(self.properties[key])
+        return default
+
+    def setProperty(self, key:str, value) -> None:
+        self.properties[key] = value
+
     def nodesWithBus(self):
         nbus = list()
 
