@@ -21,9 +21,9 @@ class SpiceParser(dict):
         with open(filename) as fi:
 
             is_subckt = False
-            re_subckt_start = re.compile("^\s*\.subckt",re.I)
-            re_subckt_end = re.compile("^\s*\.ends",re.I)
-            re_plus = re.compile("^\s*\+")
+            re_subckt_start = re.compile(r"^\s*\.subckt",re.I)
+            re_subckt_end = re.compile(r"^\s*\.ends",re.I)
+            re_plus = re.compile(r"^\s*\+")
             line_number = 0
             for l in fi:
                 line = l.strip()

@@ -29,7 +29,7 @@ import re
 
 
 class Signal:
-    re_bus = re.compile("^(\S+)(\[|<)(\d+)(<|\])$")
+    re_bus = re.compile(r"^(\S+)(\[|<)(\d+)(<|\])$")
 
     def __init__(self,name):
         self.orgname = name
