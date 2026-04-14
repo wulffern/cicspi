@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cicspi"
-version = "0.1.2"
+version = "0.1.3"
 authors = [
   { name="Carsten Wulff", email="carsten@wulff.no" },
 ]
@@ -21,9 +21,12 @@ classifiers = [
 ]
 
 [project.scripts]
-cicspi = "cicspi.cic:cli"
+cicspi = "cicspi.entry:cli"
 
 
 [project.urls]
 "Homepage" = "https://github.com/wulffern/cicspi"
 "Bug Tracker" = "https://github.com/wulffern/cicspi/issues"
+
+[tool.setuptools.packages.find]
+include = ["cicspi*"]

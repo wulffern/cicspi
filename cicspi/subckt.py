@@ -139,13 +139,13 @@ class Subckt(spi.SpiceObject):
         for line in subckt_buffer:
             #- Ignore comments and empty lines
             if(re.search(re_ignore,line)):
+                instLineNumber += 1
                 continue
 
             inst = spi.SubcktInstance(self.parser)
             inst.parse(line,instLineNumber)
             self.addInstance(inst)
-
-        instLineNumber += 1
+            instLineNumber += 1
 
     def tospice(self):
         ss = ".subckt " + self.name + " "+ " ".join(self.nodes) + "\n"

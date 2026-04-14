@@ -31,6 +31,8 @@ class SpiceParser(dict):
 
                 # Handle plus
                 if(re.search(re_plus,l)):
+                    if(not is_subckt or not subckt_buffer):
+                        raise Exception("Continuation line outside subckt on line %d " % line_number)
                     line = re.sub(re_plus,"",line)
                     subckt_buffer[-1] += line
                     continue
