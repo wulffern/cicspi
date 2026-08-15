@@ -35,6 +35,19 @@ class SubcktInstance(spi.SpiceObject):
         self.subcktName = ""
         self.deviceName = ""
         self.groupTag = ""
+        self.PARAM_RE = re.compile(r"""
+        \s+
+        (?P<key>[A-Za-z_][A-Za-z0-9_]*)
+        \s*=\s*
+        (?P<value>
+            '(?:[^']|'')*'
+            |
+            "(?:[^"]|"")*"
+            |
+            [^\s]+
+        )
+        \s*$
+    """, re.VERBOSE)
         super().__init__(parser)
 
 
@@ -49,6 +62,28 @@ class SubcktInstance(spi.SpiceObject):
         if("groupTag" in o):
             self.groupTag = o["groupTag"]
 
+    def getPathInstance(self,path):
+
+        if(self.subcktName in self.parser):
+
+            ckt = self.parser[self.subcktName]
+            iname = path.pop(0)
+
+            iinst = ckt.getInstance(iname)
+            if(iinst is not None):
+                (inst,subpath) = iinst.getPathInstance(path)
+                foundpath = iname
+                if(subpath is not None):
+                    foundpath = iname + "." + subpath
+                return (inst,foundpath)
+            else:
+                #- the path names something this subckt does not have:
+                #- hand back how far it got, so the caller can say where
+                #- the path stopped rather than only that it failed
+                return (self,iname)
+        else:
+            return (self,None)
+        pass
 
     def toJson(self):
         o = super().toJson()
@@ -74,24 +109,35 @@ class SubcktInstance(spi.SpiceObject):
         self.subcktName = sub.name
 
 
+    def strip_spice_params(self,line: str):
+        params = {}
+
+        # normalize continuation lines first if needed
+        line = re.sub(r"\n\+\s*", " ", line).strip()
+
+        while True:
+            m = self.PARAM_RE.search(line)
+            if not m:
+                break
+            self.setProperty(m.group("key"),m.group("value"))
+            line = line[:m.start()].rstrip()
+
+        return line
+
     def parse(self,line,lineNumber):
         self.lineNumber = lineNumber
         self.spiceStr = line
+
+        #- remove duplicate space
+        line = re.sub(r"\s+"," ",line)
 
         re_params_cdl = re.compile(r"\s*\$.*$")
         line = re.sub(re_params_cdl,"",line)
 
 
-        #- Remove parameters
-        re_params =  re.compile(r"(\s+(\$|\S+)\s*=\s*(\S+))+")
-        m = re.search(re_params,line)
-        if(m):
-            #- TODO fix parameter read
-            pass
-            #for match in m.groups():
-            #    print(match)
+        line =self.strip_spice_params(line)
 
-        line = re.sub(re_params,"",line)
+
 
         self.nodes = re.split(r"\s+",line)
 
