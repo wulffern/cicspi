@@ -56,9 +56,12 @@ class SubcktInstance(spi.SpiceObject):
 
     def fromJson(self,o):
         super().fromJson(o)
-        self.groupName = o["groupName"]
-        self.subcktName = self.prefix + o["subcktName"]
-        self.deviceName = o["deviceName"]
+        #- cicpy's compiler (like ciccreator) omits empty bookkeeping
+        #- keys, so absence means "" -- a hard lookup made every
+        #- compiled .cic unreadable
+        self.groupName = o.get("groupName","")
+        self.subcktName = self.prefix + o.get("subcktName","")
+        self.deviceName = o.get("deviceName","")
         if("groupTag" in o):
             self.groupTag = o["groupTag"]
 
