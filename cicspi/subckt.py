@@ -24,6 +24,27 @@ class Subckt(spi.SpiceObject):
             Subckt.circuits = parser
         pass
 
+    def getInstance(self,key):
+
+        if key in self.inst_index:
+            return self.instances[self.inst_index[key]]
+        elif key.upper() in self.inst_index:
+            return self.instances[self.inst_index[key.upper()]]
+        elif key.lower() in self.inst_index:
+            return self.instances[self.inst_index[key.lower()]]
+        else:
+            return None
+
+    def getInstances(self,regex):
+
+        insts = list()
+        for key in self.inst_index:
+            #print(key)
+            if(re.search(regex,key,re.I)):
+                insts.append(self.instances[self.inst_index[key]])
+        return insts
+
+    
     def fromJson(self,o):
         super().fromJson(o)
 
@@ -86,7 +107,6 @@ class Subckt(spi.SpiceObject):
                 #self.instances.remove(inst)
 
         for rm in rmlist:
-            print(rm)
             self.instances.remove(rm)
 
         sub.nodes = instnodes.keys()
