@@ -8,16 +8,22 @@ class SpiceParser(dict):
 
     def __init__(self):
         self.allinst = dict()
+        #- the file's own top level, the lines outside any .subckt. It
+        #- lives here and never under self["TOP"]: that name belongs to
+        #- a real `.subckt TOP` when a netlist has one.
+        self.top = None
         pass
 
-    def _parseSubckt(self,line_number,subckt_buffer):
+    def _parseSubckt(self,line_number,subckt_buffer,register=True):
         ckt = spi.Subckt(self)
         ckt.parse(subckt_buffer,line_number)
-        self[ckt.name] = ckt
+        if(register):
+            self[ckt.name] = ckt
+        return ckt
 
     def getPathInstance(self,path):
 
-        top = self["TOP"]
+        top = self.top
         iname = path.pop(0)
         inst = top.getInstance(iname)
         if(inst):
@@ -116,9 +122,16 @@ class SpiceParser(dict):
 
         #- everything that sat outside a .subckt becomes one, named TOP,
         #- so the file's own top level can be asked for its instances
-        #- like any other cell. A cell genuinely called TOP is
-        #- overwritten by this -- worth knowing before naming one.
+        #- like any other cell -- as self.top, and NOT as self["TOP"].
+        #- The dict holds the netlist's real subcircuits and nothing
+        #- else. Published there, the synthetic TOP overwrote every real
+        #- `.subckt TOP` (every standard-cell library in the cicpy parity
+        #- corpus has one), and even an EMPTY one answered "yes" to
+        #- cicpy's "does TOP have a netlist?", so a TOP whose netlist is
+        #- written inline in the object file never got it read. Either
+        #- way the cell came back with no instances and cicpy dropped
+        #- the library it was the root of.
         if(outermost):
             not_subckt_buffer.insert(0,".subckt TOP")
             not_subckt_buffer.append(".ends")
-            self._parseSubckt(0,not_subckt_buffer)
+            self.top = self._parseSubckt(0,not_subckt_buffer,register=False)

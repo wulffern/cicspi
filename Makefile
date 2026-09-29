@@ -1,7 +1,10 @@
 
 cwd = ${shell pwd}
 
-.PHONY: docs build
+.PHONY: docs build test
+
+test:
+	python3 -m unittest discover -s tests -q
 
 
 build:

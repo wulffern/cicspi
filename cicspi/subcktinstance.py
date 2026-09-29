@@ -67,6 +67,11 @@ class SubcktInstance(spi.SpiceObject):
 
     def getPathInstance(self,path):
 
+        #- the path ends HERE: an instance of a subckt is a valid
+        #- answer, not a reason to descend and pop an empty path
+        if(not path):
+            return (self,None)
+
         if(self.subcktName in self.parser):
 
             ckt = self.parser[self.subcktName]
